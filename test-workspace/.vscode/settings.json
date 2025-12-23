@@ -1,0 +1,11 @@
+{
+  "mcp-testing.server.autoStart": true,
+  "mcp-testing.server.timeout": 5000,
+  "mcp-testing.test.maxParallelTests": 4,
+  "mcp-testing.coverage.thresholds": {
+    "lines": 80,
+    "branches": 75,
+    "functions": 85,
+    "statements": 80
+  }
+}

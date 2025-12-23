@@ -1,0 +1,1503 @@
+{
+  "name": "mcp-acs-testing",
+  "displayName": "MCP ACS Testing Manager",
+  "description": "Comprehensive testing capabilities for AI agents with MCP integration. Run tests, analyze coverage, generate tests, debug failures, and manage the complete testing lifecycle. Part of the Digital Defiance AI Capabilities Suite.",
+  "version": "0.1.0",
+  "packageManager": "yarn@4.12.0",
+  "publisher": "DigitalDefiance",
+  "icon": "images/icon.png",
+  "engines": {
+    "vscode": "^1.105.0"
+  },
+  "categories": [
+    "Testing",
+    "Debuggers",
+    "Other"
+  ],
+  "keywords": [
+    "testing",
+    "mcp",
+    "mcp-server",
+    "ai-agent",
+    "copilot",
+    "test-runner",
+    "coverage",
+    "test-generation",
+    "debugging",
+    "jest",
+    "mocha",
+    "pytest",
+    "vitest"
+  ],
+  "activationEvents": [
+    "onStartupFinished",
+    "onLanguage:javascript",
+    "onLanguage:typescript",
+    "onLanguage:javascriptreact",
+    "onLanguage:typescriptreact",
+    "onLanguage:python"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "chatParticipants": [
+      {
+        "id": "mcp-acs-testing.participant",
+        "name": "testing",
+        "description": "MCP ACS Testing Manager - Comprehensive testing capabilities with AI assistance",
+        "isSticky": true
+      }
+    ],
+    "commands": [
+      {
+        "command": "mcp-testing.runTests",
+        "title": "MCP Testing: Run Tests",
+        "icon": "$(play)"
+      },
+      {
+        "command": "mcp-testing.runTestAtCursor",
+        "title": "MCP Testing: Run Test at Cursor",
+        "icon": "$(play)"
+      },
+      {
+        "command": "mcp-testing.runAllTests",
+        "title": "MCP Testing: Run All Tests",
+        "icon": "$(play-circle)"
+      },
+      {
+        "command": "mcp-testing.runTestFile",
+        "title": "MCP Testing: Run Test File",
+        "icon": "$(file)"
+      },
+      {
+        "command": "mcp-testing.runTestSuite",
+        "title": "MCP Testing: Run Test Suite",
+        "icon": "$(folder)"
+      },
+      {
+        "command": "mcp-testing.debugTest",
+        "title": "MCP Testing: Debug Test",
+        "icon": "$(debug)"
+      },
+      {
+        "command": "mcp-testing.debugTestAtCursor",
+        "title": "MCP Testing: Debug Test at Cursor",
+        "icon": "$(debug)"
+      },
+      {
+        "command": "mcp-testing.stopTests",
+        "title": "MCP Testing: Stop Tests",
+        "icon": "$(stop)"
+      },
+      {
+        "command": "mcp-testing.refreshTests",
+        "title": "MCP Testing: Refresh Tests",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "mcp-testing.searchTests",
+        "title": "MCP Testing: Search Tests",
+        "icon": "$(search)"
+      },
+      {
+        "command": "mcp-testing.filterTests",
+        "title": "MCP Testing: Filter Tests",
+        "icon": "$(filter)"
+      },
+      {
+        "command": "mcp-testing.showCoverage",
+        "title": "MCP Testing: Show Coverage",
+        "icon": "$(graph)"
+      },
+      {
+        "command": "mcp-testing.toggleCoverage",
+        "title": "MCP Testing: Toggle Coverage Display",
+        "icon": "$(eye)"
+      },
+      {
+        "command": "mcp-testing.showCoverageReport",
+        "title": "MCP Testing: Show Coverage Report",
+        "icon": "$(graph)"
+      },
+      {
+        "command": "mcp-testing.exportCoverage",
+        "title": "MCP Testing: Export Coverage",
+        "icon": "$(export)"
+      },
+      {
+        "command": "mcp-testing.showCoverageGaps",
+        "title": "MCP Testing: Show Coverage Gaps",
+        "icon": "$(warning)"
+      },
+      {
+        "command": "mcp-testing.showCoverageTrends",
+        "title": "MCP Testing: Show Coverage Trends",
+        "icon": "$(graph-line)"
+      },
+      {
+        "command": "mcp-testing.generateTests",
+        "title": "MCP Testing: Generate Tests",
+        "icon": "$(wand)"
+      },
+      {
+        "command": "mcp-testing.generateTestsFromCode",
+        "title": "MCP Testing: Generate Tests from Code",
+        "icon": "$(wand)"
+      },
+      {
+        "command": "mcp-testing.generateFixtures",
+        "title": "MCP Testing: Generate Fixtures",
+        "icon": "$(symbol-property)"
+      },
+      {
+        "command": "mcp-testing.suggestTestCases",
+        "title": "MCP Testing: Suggest Test Cases",
+        "icon": "$(lightbulb)"
+      },
+      {
+        "command": "mcp-testing.showTestGeneration",
+        "title": "MCP Testing: Show Test Generation Panel",
+        "icon": "$(wand)"
+      },
+      {
+        "command": "mcp-testing.rerunFailedTests",
+        "title": "MCP Testing: Rerun Failed Tests",
+        "icon": "$(debug-restart)"
+      },
+      {
+        "command": "mcp-testing.rerunLastTest",
+        "title": "MCP Testing: Rerun Last Test",
+        "icon": "$(history)"
+      },
+      {
+        "command": "mcp-testing.restartServer",
+        "title": "MCP Testing: Restart Server",
+        "icon": "$(debug-restart)"
+      },
+      {
+        "command": "mcp-testing.openSettings",
+        "title": "MCP Testing: Open Settings",
+        "icon": "$(settings-gear)"
+      },
+      {
+        "command": "mcp-testing.showTestResults",
+        "title": "MCP Testing: Show Test Results",
+        "icon": "$(list-tree)"
+      },
+      {
+        "command": "mcp-testing.clearHistory",
+        "title": "MCP Testing: Clear Test History",
+        "icon": "$(clear-all)"
+      },
+      {
+        "command": "mcp-testing.exportHistory",
+        "title": "MCP Testing: Export Test History",
+        "icon": "$(export)"
+      },
+      {
+        "command": "mcp-testing.compareRuns",
+        "title": "MCP Testing: Compare Test Runs",
+        "icon": "$(diff)"
+      },
+      {
+        "command": "mcp-testing.toggleShowOnlyUncovered",
+        "title": "MCP Testing: Toggle Show Only Uncovered",
+        "icon": "$(filter)"
+      },
+      {
+        "command": "mcp-testing.navigateToUncovered",
+        "title": "MCP Testing: Navigate to Uncovered Code",
+        "icon": "$(go-to-file)"
+      },
+      {
+        "command": "mcp-testing.generateTestsForUncovered",
+        "title": "MCP Testing: Generate Tests for Uncovered Code",
+        "icon": "$(wand)"
+      },
+      {
+        "command": "mcp-testing.detectFlakyTests",
+        "title": "MCP Testing: Detect Flaky Tests",
+        "icon": "$(search)"
+      },
+      {
+        "command": "mcp-testing.analyzeFlakyTest",
+        "title": "MCP Testing: Analyze Flaky Test",
+        "icon": "$(search)"
+      },
+      {
+        "command": "mcp-testing.applyFix",
+        "title": "MCP Testing: Apply Fix",
+        "icon": "$(wrench)"
+      },
+      {
+        "command": "mcp-testing.suggestFlakyFixes",
+        "title": "MCP Testing: Suggest Flaky Fixes",
+        "icon": "$(lightbulb)"
+      },
+      {
+        "command": "mcp-testing.manageTestTags",
+        "title": "MCP Testing: Manage Test Tags",
+        "icon": "$(tag)"
+      },
+      {
+        "command": "mcp-testing.runTestsWithTag",
+        "title": "MCP Testing: Run Tests with Tag",
+        "icon": "$(play)"
+      },
+      {
+        "command": "mcp-testing.addTestTag",
+        "title": "MCP Testing: Add Test Tag",
+        "icon": "$(add)"
+      },
+      {
+        "command": "mcp-testing.removeTestTag",
+        "title": "MCP Testing: Remove Test Tag",
+        "icon": "$(remove)"
+      },
+      {
+        "command": "mcp-testing.refreshTreeViews",
+        "title": "MCP Testing: Refresh Tree Views",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "mcp-testing.showMutationTesting",
+        "title": "MCP Testing: Show Mutation Testing",
+        "icon": "$(beaker)"
+      },
+      {
+        "command": "mcp-testing.runMutationTesting",
+        "title": "MCP Testing: Run Mutation Testing",
+        "icon": "$(beaker)"
+      },
+      {
+        "command": "mcp-testing.showTestImpact",
+        "title": "MCP Testing: Show Test Impact Analysis",
+        "icon": "$(git-compare)"
+      },
+      {
+        "command": "mcp-testing.analyzeImpact",
+        "title": "MCP Testing: Analyze Test Impact",
+        "icon": "$(git-compare)"
+      },
+      {
+        "command": "mcp-testing.runAffectedTests",
+        "title": "MCP Testing: Run Affected Tests",
+        "icon": "$(play)"
+      },
+      {
+        "command": "mcp-testing.showTestPerformance",
+        "title": "MCP Testing: Show Test Performance",
+        "icon": "$(dashboard)"
+      },
+      {
+        "command": "mcp-testing.benchmarkPerformance",
+        "title": "MCP Testing: Benchmark Performance",
+        "icon": "$(dashboard)"
+      },
+      {
+        "command": "mcp-testing.showSlowTests",
+        "title": "MCP Testing: Show Slow Tests",
+        "icon": "$(watch)"
+      },
+      {
+        "command": "mcp-testing.optimizeTest",
+        "title": "MCP Testing: Optimize Test",
+        "icon": "$(rocket)"
+      },
+      {
+        "command": "mcp-testing.showCoverageForTest",
+        "title": "MCP Testing: Show Coverage for Test",
+        "icon": "$(graph)"
+      },
+      {
+        "command": "mcp-testing.showTestResult",
+        "title": "MCP Testing: Show Test Result",
+        "icon": "$(info)"
+      },
+      {
+        "command": "mcp-testing.refreshCodeLens",
+        "title": "MCP Testing: Refresh CodeLens",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "mcp-testing.clearDiagnostics",
+        "title": "MCP Testing: Clear Diagnostics",
+        "icon": "$(clear-all)"
+      },
+      {
+        "command": "mcp-testing.refreshDiagnostics",
+        "title": "MCP Testing: Refresh Diagnostics",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "mcp-testing.analyzeFailure",
+        "title": "MCP Testing: Analyze Failure",
+        "icon": "$(search)"
+      },
+      {
+        "command": "mcp-testing.compareValues",
+        "title": "MCP Testing: Compare Values",
+        "icon": "$(diff)"
+      },
+      {
+        "command": "mcp-testing.watchTests",
+        "title": "MCP Testing: Watch Tests",
+        "icon": "$(eye-watch)"
+      },
+      {
+        "command": "mcp-testing.stopWatchMode",
+        "title": "MCP Testing: Stop Watch Mode",
+        "icon": "$(eye-closed)"
+      },
+      {
+        "command": "mcp-testing.runTestsParallel",
+        "title": "MCP Testing: Run Tests in Parallel",
+        "icon": "$(layers)"
+      },
+      {
+        "command": "mcp-testing.configureFramework",
+        "title": "MCP Testing: Configure Framework",
+        "icon": "$(settings-gear)"
+      },
+      {
+        "command": "mcp-testing.selectFramework",
+        "title": "MCP Testing: Select Test Framework",
+        "icon": "$(symbol-method)"
+      },
+      {
+        "command": "mcp-testing.showFrameworkConfig",
+        "title": "MCP Testing: Show Framework Configuration",
+        "icon": "$(json)"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "mcp-testing-explorer",
+          "title": "MCP ACS Testing Manager",
+          "icon": "$(beaker)"
+        }
+      ]
+    },
+    "views": {
+      "mcp-testing-explorer": [
+        {
+          "id": "mcp-testing-tests",
+          "name": "Tests",
+          "icon": "$(beaker)",
+          "contextualTitle": "MCP Tests"
+        },
+        {
+          "id": "mcp-testing-coverage",
+          "name": "Coverage",
+          "icon": "$(graph)",
+          "contextualTitle": "Test Coverage"
+        },
+        {
+          "id": "mcp-testing-history",
+          "name": "Test History",
+          "icon": "$(history)",
+          "contextualTitle": "Test Run History"
+        },
+        {
+          "id": "mcp-testing-flaky",
+          "name": "Flaky Tests",
+          "icon": "$(warning)",
+          "contextualTitle": "Flaky Tests"
+        },
+        {
+          "id": "mcp-testing-tags",
+          "name": "Test Tags",
+          "icon": "$(tag)",
+          "contextualTitle": "Test Tags"
+        }
+      ]
+    },
+    "walkthroughs": [
+      {
+        "id": "mcp-acs-testing.walkthrough",
+        "title": "Get Started with MCP ACS Testing Manager",
+        "description": "Learn how to run tests, analyze coverage, and debug failures with AI assistance",
+        "steps": [
+          {
+            "id": "install",
+            "title": "Extension Installed",
+            "description": "MCP ACS Testing Manager is now active.\n[Open Settings](command:workbench.action.openSettings?%5B%22mcp-testing%22%5D)",
+            "media": {
+              "markdown": "README.md"
+            }
+          },
+          {
+            "id": "copilot",
+            "title": "Use with Copilot",
+            "description": "Ask Copilot to manage tests:\n- `@testing run all tests`\n- `@testing show coverage report`\n[Try it now](command:workbench.action.chat.open)",
+            "media": {
+              "markdown": "README.md"
+            }
+          }
+        ]
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "mcp-testing.runTests",
+        "key": "ctrl+shift+t",
+        "mac": "cmd+shift+t"
+      },
+      {
+        "command": "mcp-testing.debugTest",
+        "key": "ctrl+shift+d",
+        "mac": "cmd+shift+d"
+      },
+      {
+        "command": "mcp-testing.toggleCoverage",
+        "key": "ctrl+shift+c",
+        "mac": "cmd+shift+c"
+      },
+      {
+        "command": "mcp-testing.generateTests",
+        "key": "ctrl+shift+g",
+        "mac": "cmd+shift+g"
+      },
+      {
+        "command": "mcp-testing.rerunFailedTests",
+        "key": "ctrl+shift+r",
+        "mac": "cmd+shift+r"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "mcp-testing.refreshTests",
+          "when": "view == mcp-testing-tests",
+          "group": "navigation"
+        },
+        {
+          "command": "mcp-testing.runTests",
+          "when": "view == mcp-testing-tests",
+          "group": "navigation"
+        },
+        {
+          "command": "mcp-testing.clearHistory",
+          "when": "view == mcp-testing-history",
+          "group": "navigation"
+        },
+        {
+          "command": "mcp-testing.exportHistory",
+          "when": "view == mcp-testing-history",
+          "group": "navigation"
+        },
+        {
+          "command": "mcp-testing.toggleShowOnlyUncovered",
+          "when": "view == mcp-testing-coverage",
+          "group": "navigation"
+        },
+        {
+          "command": "mcp-testing.navigateToUncovered",
+          "when": "view == mcp-testing-coverage",
+          "group": "navigation"
+        },
+        {
+          "command": "mcp-testing.detectFlakyTests",
+          "when": "view == mcp-testing-flaky",
+          "group": "navigation"
+        },
+        {
+          "command": "mcp-testing.manageTestTags",
+          "when": "view == mcp-testing-tags",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "mcp-testing.runTestsWithTag",
+          "when": "view == mcp-testing-tags && viewItem == testTag",
+          "group": "inline"
+        },
+        {
+          "command": "mcp-testing.generateTestsForUncovered",
+          "when": "view == mcp-testing-coverage && viewItem == coverageFile",
+          "group": "inline"
+        },
+        {
+          "command": "mcp-testing.analyzeFlakyTest",
+          "when": "view == mcp-testing-flaky && viewItem == flakyTest",
+          "group": "inline"
+        },
+        {
+          "command": "mcp-testing.applyFix",
+          "when": "view == mcp-testing-flaky && viewItem == flakyFix",
+          "group": "inline"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "mcp-testing.runTests"
+        },
+        {
+          "command": "mcp-testing.runTestAtCursor"
+        },
+        {
+          "command": "mcp-testing.runAllTests"
+        },
+        {
+          "command": "mcp-testing.runTestFile"
+        },
+        {
+          "command": "mcp-testing.runTestSuite"
+        },
+        {
+          "command": "mcp-testing.debugTest"
+        },
+        {
+          "command": "mcp-testing.debugTestAtCursor"
+        },
+        {
+          "command": "mcp-testing.stopTests"
+        },
+        {
+          "command": "mcp-testing.refreshTests"
+        },
+        {
+          "command": "mcp-testing.searchTests"
+        },
+        {
+          "command": "mcp-testing.filterTests"
+        },
+        {
+          "command": "mcp-testing.showCoverage"
+        },
+        {
+          "command": "mcp-testing.toggleCoverage"
+        },
+        {
+          "command": "mcp-testing.showCoverageReport"
+        },
+        {
+          "command": "mcp-testing.exportCoverage"
+        },
+        {
+          "command": "mcp-testing.showCoverageGaps"
+        },
+        {
+          "command": "mcp-testing.showCoverageTrends"
+        },
+        {
+          "command": "mcp-testing.generateTests"
+        },
+        {
+          "command": "mcp-testing.generateTestsFromCode"
+        },
+        {
+          "command": "mcp-testing.generateFixtures"
+        },
+        {
+          "command": "mcp-testing.suggestTestCases"
+        },
+        {
+          "command": "mcp-testing.showTestGeneration"
+        },
+        {
+          "command": "mcp-testing.rerunFailedTests"
+        },
+        {
+          "command": "mcp-testing.rerunLastTest"
+        },
+        {
+          "command": "mcp-testing.restartServer"
+        },
+        {
+          "command": "mcp-testing.openSettings"
+        },
+        {
+          "command": "mcp-testing.showTestResults"
+        },
+        {
+          "command": "mcp-testing.clearHistory"
+        },
+        {
+          "command": "mcp-testing.exportHistory"
+        },
+        {
+          "command": "mcp-testing.compareRuns"
+        },
+        {
+          "command": "mcp-testing.toggleShowOnlyUncovered"
+        },
+        {
+          "command": "mcp-testing.navigateToUncovered"
+        },
+        {
+          "command": "mcp-testing.generateTestsForUncovered"
+        },
+        {
+          "command": "mcp-testing.detectFlakyTests"
+        },
+        {
+          "command": "mcp-testing.analyzeFlakyTest"
+        },
+        {
+          "command": "mcp-testing.applyFix"
+        },
+        {
+          "command": "mcp-testing.suggestFlakyFixes"
+        },
+        {
+          "command": "mcp-testing.manageTestTags"
+        },
+        {
+          "command": "mcp-testing.runTestsWithTag"
+        },
+        {
+          "command": "mcp-testing.addTestTag"
+        },
+        {
+          "command": "mcp-testing.removeTestTag"
+        },
+        {
+          "command": "mcp-testing.refreshTreeViews"
+        },
+        {
+          "command": "mcp-testing.showMutationTesting"
+        },
+        {
+          "command": "mcp-testing.runMutationTesting"
+        },
+        {
+          "command": "mcp-testing.showTestImpact"
+        },
+        {
+          "command": "mcp-testing.analyzeImpact"
+        },
+        {
+          "command": "mcp-testing.runAffectedTests"
+        },
+        {
+          "command": "mcp-testing.showTestPerformance"
+        },
+        {
+          "command": "mcp-testing.benchmarkPerformance"
+        },
+        {
+          "command": "mcp-testing.showSlowTests"
+        },
+        {
+          "command": "mcp-testing.optimizeTest"
+        },
+        {
+          "command": "mcp-testing.showCoverageForTest"
+        },
+        {
+          "command": "mcp-testing.showTestResult"
+        },
+        {
+          "command": "mcp-testing.refreshCodeLens"
+        },
+        {
+          "command": "mcp-testing.clearDiagnostics"
+        },
+        {
+          "command": "mcp-testing.refreshDiagnostics"
+        },
+        {
+          "command": "mcp-testing.analyzeFailure"
+        },
+        {
+          "command": "mcp-testing.compareValues"
+        },
+        {
+          "command": "mcp-testing.watchTests"
+        },
+        {
+          "command": "mcp-testing.stopWatchMode"
+        },
+        {
+          "command": "mcp-testing.runTestsParallel"
+        },
+        {
+          "command": "mcp-testing.configureFramework"
+        },
+        {
+          "command": "mcp-testing.selectFramework"
+        },
+        {
+          "command": "mcp-testing.showFrameworkConfig"
+        }
+      ]
+    },
+    "problemMatchers": [
+      {
+        "name": "mcp-testing",
+        "owner": "mcp-testing",
+        "fileLocation": [
+          "relative",
+          "${workspaceFolder}"
+        ],
+        "pattern": {
+          "regexp": "^\\s+at\\s+(.*)\\s+\\((.+):(\\d+):(\\d+)\\)$",
+          "file": 2,
+          "line": 3,
+          "column": 4,
+          "message": 1
+        }
+      }
+    ],
+    "taskDefinitions": [
+      {
+        "type": "mcp-testing",
+        "required": [
+          "taskType"
+        ],
+        "properties": {
+          "taskType": {
+            "type": "string",
+            "description": "The type of test task to run"
+          },
+          "testPath": {
+            "type": "string",
+            "description": "Path to test file or directory"
+          },
+          "pattern": {
+            "type": "string",
+            "description": "Pattern to match test files"
+          },
+          "framework": {
+            "type": "string",
+            "description": "Test framework to use"
+          },
+          "watch": {
+            "type": "boolean",
+            "description": "Run tests in watch mode"
+          },
+          "parallel": {
+            "type": "boolean",
+            "description": "Run tests in parallel"
+          },
+          "maxWorkers": {
+            "type": "number",
+            "description": "Maximum number of parallel workers"
+          },
+          "timeout": {
+            "type": "number",
+            "description": "Test timeout in milliseconds"
+          }
+        }
+      }
+    ],
+    "configuration": {
+      "title": "MCP ACS Testing Manager",
+      "properties": {
+        "mcp-testing.server.serverPath": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Path to MCP testing server executable.\n\nLeave empty to use the bundled server or global installation.\n\n**Note:** Changes require server restart."
+        },
+        "mcp-testing.server.autoStart": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Automatically start MCP server when VS Code opens."
+        },
+        "mcp-testing.server.timeout": {
+          "type": "number",
+          "default": 30000,
+          "minimum": 1000,
+          "maximum": 300000,
+          "markdownDescription": "Server timeout in milliseconds.\n\n**Default:** 30000 ms (30 seconds)\n\n**Range:** 1000-300000 ms"
+        },
+        "mcp-testing.server.logLevel": {
+          "type": "string",
+          "enum": [
+            "debug",
+            "info",
+            "warn",
+            "error"
+          ],
+          "default": "info",
+          "markdownDescription": "Log level for MCP ACS Testing Manager."
+        },
+        "mcp-testing.server.retryAttempts": {
+          "type": "number",
+          "default": 3,
+          "minimum": 0,
+          "maximum": 10,
+          "markdownDescription": "Number of retry attempts for server connection failures.\n\n**Default:** 3"
+        },
+        "mcp-testing.server.retryDelay": {
+          "type": "number",
+          "default": 1000,
+          "minimum": 100,
+          "maximum": 10000,
+          "markdownDescription": "Delay between retry attempts in milliseconds.\n\n**Default:** 1000 ms"
+        },
+        "mcp-testing.test.defaultFramework": {
+          "type": "string",
+          "enum": [
+            "jest",
+            "mocha",
+            "pytest",
+            "vitest",
+            "jasmine",
+            "ava",
+            "auto"
+          ],
+          "default": "auto",
+          "markdownDescription": "Default test framework to use.\n\n**auto**: Automatically detect from project"
+        },
+        "mcp-testing.test.defaultTimeout": {
+          "type": "number",
+          "default": 5000,
+          "minimum": 100,
+          "maximum": 300000,
+          "markdownDescription": "Default test timeout in milliseconds.\n\n**Default:** 5000 ms (5 seconds)"
+        },
+        "mcp-testing.test.maxParallelTests": {
+          "type": "number",
+          "default": 4,
+          "minimum": 1,
+          "maximum": 32,
+          "markdownDescription": "Maximum number of parallel test processes.\n\n**Default:** 4"
+        },
+        "mcp-testing.test.autoRun": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Automatically run tests when files change."
+        },
+        "mcp-testing.test.autoRunDelay": {
+          "type": "number",
+          "default": 1000,
+          "minimum": 100,
+          "maximum": 10000,
+          "markdownDescription": "Delay before auto-running tests after file changes (milliseconds).\n\n**Default:** 1000 ms"
+        },
+        "mcp-testing.test.watchMode": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Enable watch mode for continuous test execution."
+        },
+        "mcp-testing.test.runOnSave": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Run tests when test files are saved."
+        },
+        "mcp-testing.test.clearConsoleOnRun": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Clear console output before running tests."
+        },
+        "mcp-testing.test.showInlineResults": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Show test results inline in the editor."
+        },
+        "mcp-testing.test.testPathPatterns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "**/*.test.{js,ts,jsx,tsx}",
+            "**/*.spec.{js,ts,jsx,tsx}",
+            "**/test_*.py",
+            "**/*_test.py"
+          ],
+          "markdownDescription": "Glob patterns for test file discovery."
+        },
+        "mcp-testing.test.testPathIgnorePatterns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "**/node_modules/**",
+            "**/dist/**",
+            "**/build/**",
+            "**/.venv/**",
+            "**/venv/**"
+          ],
+          "markdownDescription": "Glob patterns to ignore during test discovery."
+        },
+        "mcp-testing.coverage.enabled": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Enable coverage analysis."
+        },
+        "mcp-testing.coverage.showInEditor": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Show coverage decorations in editor."
+        },
+        "mcp-testing.coverage.showGutterIcons": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Show coverage gutter icons (green/red/yellow)."
+        },
+        "mcp-testing.coverage.showLineHighlights": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Highlight covered/uncovered lines with background colors."
+        },
+        "mcp-testing.coverage.heatMapMode": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Show coverage as a heat map based on execution count."
+        },
+        "mcp-testing.coverage.thresholds": {
+          "type": "object",
+          "properties": {
+            "lines": {
+              "type": "number",
+              "default": 80
+            },
+            "branches": {
+              "type": "number",
+              "default": 75
+            },
+            "functions": {
+              "type": "number",
+              "default": 85
+            },
+            "statements": {
+              "type": "number",
+              "default": 80
+            }
+          },
+          "default": {
+            "lines": 80,
+            "branches": 75,
+            "functions": 85,
+            "statements": 80
+          },
+          "markdownDescription": "Coverage thresholds (percentage)."
+        },
+        "mcp-testing.coverage.reportFormats": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "json",
+              "html",
+              "lcov",
+              "cobertura",
+              "text"
+            ]
+          },
+          "default": [
+            "json",
+            "html"
+          ],
+          "markdownDescription": "Coverage report formats to generate."
+        },
+        "mcp-testing.coverage.outputDirectory": {
+          "type": "string",
+          "default": "coverage",
+          "markdownDescription": "Directory for coverage reports.\n\n**Default:** coverage"
+        },
+        "mcp-testing.coverage.collectFrom": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "src/**/*.{js,ts,jsx,tsx}",
+            "lib/**/*.py"
+          ],
+          "markdownDescription": "Glob patterns for files to collect coverage from."
+        },
+        "mcp-testing.coverage.excludePatterns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "**/*.test.{js,ts,jsx,tsx}",
+            "**/*.spec.{js,ts,jsx,tsx}",
+            "**/test_*.py",
+            "**/*_test.py",
+            "**/node_modules/**"
+          ],
+          "markdownDescription": "Glob patterns to exclude from coverage collection."
+        },
+        "mcp-testing.coverage.trackTrends": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Track coverage trends over time."
+        },
+        "mcp-testing.coverage.trendHistorySize": {
+          "type": "number",
+          "default": 30,
+          "minimum": 1,
+          "maximum": 365,
+          "markdownDescription": "Number of historical coverage reports to keep.\n\n**Default:** 30"
+        },
+        "mcp-testing.testGeneration.enabled": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Enable AI-powered test generation."
+        },
+        "mcp-testing.testGeneration.autoSuggest": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Automatically suggest tests for uncovered code."
+        },
+        "mcp-testing.testGeneration.includeEdgeCases": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Include edge cases in generated tests."
+        },
+        "mcp-testing.testGeneration.includePropertyTests": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Include property-based tests in generation."
+        },
+        "mcp-testing.testGeneration.followProjectPatterns": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Follow existing project test patterns and naming conventions."
+        },
+        "mcp-testing.testGeneration.testFileLocation": {
+          "type": "string",
+          "enum": [
+            "adjacent",
+            "testDirectory",
+            "ask"
+          ],
+          "default": "adjacent",
+          "markdownDescription": "Where to place generated test files.\n\n**adjacent**: Next to source file\n\n**testDirectory**: In test directory\n\n**ask**: Ask user each time"
+        },
+        "mcp-testing.testGeneration.testDirectory": {
+          "type": "string",
+          "default": "test",
+          "markdownDescription": "Directory for generated tests when testFileLocation is 'testDirectory'."
+        },
+        "mcp-testing.debugging.enabled": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Enable debugging integration for failed tests."
+        },
+        "mcp-testing.debugging.autoStartDebugger": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Automatically start debugger when tests fail."
+        },
+        "mcp-testing.debugging.breakOnFailure": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Break at failure point when debugging tests."
+        },
+        "mcp-testing.debugging.showVariables": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Show variable values at failure point."
+        },
+        "mcp-testing.debugging.showCallStack": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Show call stack at failure point."
+        },
+        "mcp-testing.debugging.suggestRootCauses": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Suggest potential root causes for test failures."
+        },
+        "mcp-testing.flaky.detectionEnabled": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Enable flaky test detection."
+        },
+        "mcp-testing.flaky.detectionIterations": {
+          "type": "number",
+          "default": 10,
+          "minimum": 2,
+          "maximum": 100,
+          "markdownDescription": "Number of iterations for flaky test detection.\n\n**Default:** 10"
+        },
+        "mcp-testing.flaky.failureRateThreshold": {
+          "type": "number",
+          "default": 0.1,
+          "minimum": 0,
+          "maximum": 1,
+          "markdownDescription": "Failure rate threshold to mark test as flaky (0-1).\n\n**Default:** 0.1 (10%)"
+        },
+        "mcp-testing.flaky.autoAnalyze": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Automatically analyze causes of flaky tests."
+        },
+        "mcp-testing.flaky.suggestFixes": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Suggest fixes for flaky tests."
+        },
+        "mcp-testing.flaky.trackHistory": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Track flaky test history over time."
+        },
+        "mcp-testing.mutation.enabled": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Enable mutation testing."
+        },
+        "mcp-testing.mutation.mutationTypes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "arithmetic_operator",
+              "relational_operator",
+              "logical_operator",
+              "unary_operator",
+              "assignment_operator",
+              "return_value",
+              "conditional",
+              "literal"
+            ]
+          },
+          "default": [
+            "arithmetic_operator",
+            "relational_operator",
+            "logical_operator",
+            "conditional"
+          ],
+          "markdownDescription": "Types of mutations to generate."
+        },
+        "mcp-testing.mutation.scoreThreshold": {
+          "type": "number",
+          "default": 80,
+          "minimum": 0,
+          "maximum": 100,
+          "markdownDescription": "Minimum mutation score threshold (percentage).\n\n**Default:** 80%"
+        },
+        "mcp-testing.mutation.timeout": {
+          "type": "number",
+          "default": 10000,
+          "minimum": 1000,
+          "maximum": 300000,
+          "markdownDescription": "Timeout for mutation testing per mutation (milliseconds).\n\n**Default:** 10000 ms"
+        },
+        "mcp-testing.impact.enabled": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Enable test impact analysis."
+        },
+        "mcp-testing.impact.useGitDiff": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Use git diff to detect code changes."
+        },
+        "mcp-testing.impact.useCoverageData": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Use coverage data for impact analysis."
+        },
+        "mcp-testing.impact.useImportAnalysis": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Use import/dependency analysis for impact detection."
+        },
+        "mcp-testing.impact.runAffectedOnly": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Run only affected tests by default."
+        },
+        "mcp-testing.performance.enabled": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Enable performance benchmarking."
+        },
+        "mcp-testing.performance.slowTestThreshold": {
+          "type": "number",
+          "default": 1000,
+          "minimum": 100,
+          "maximum": 60000,
+          "markdownDescription": "Threshold for marking tests as slow (milliseconds).\n\n**Default:** 1000 ms"
+        },
+        "mcp-testing.performance.trackTrends": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Track performance trends over time."
+        },
+        "mcp-testing.performance.detectRegressions": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Detect performance regressions."
+        },
+        "mcp-testing.performance.regressionThreshold": {
+          "type": "number",
+          "default": 1.5,
+          "minimum": 1,
+          "maximum": 10,
+          "markdownDescription": "Performance regression threshold (multiplier).\n\n**Default:** 1.5x (50% slower)"
+        },
+        "mcp-testing.performance.suggestOptimizations": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Suggest optimization opportunities for slow tests."
+        },
+        "mcp-testing.visualRegression.enabled": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Enable visual regression testing."
+        },
+        "mcp-testing.visualRegression.threshold": {
+          "type": "number",
+          "default": 0.1,
+          "minimum": 0,
+          "maximum": 1,
+          "markdownDescription": "Visual difference threshold (0-1).\n\n**Default:** 0.1 (10%)"
+        },
+        "mcp-testing.visualRegression.baselineDirectory": {
+          "type": "string",
+          "default": "__screenshots__/baseline",
+          "markdownDescription": "Directory for baseline screenshots."
+        },
+        "mcp-testing.visualRegression.diffDirectory": {
+          "type": "string",
+          "default": "__screenshots__/diff",
+          "markdownDescription": "Directory for diff images."
+        },
+        "mcp-testing.visualRegression.updateBaselines": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Automatically update baselines when tests fail."
+        },
+        "mcp-testing.security.enableAuditLog": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Enable audit logging for all test operations."
+        },
+        "mcp-testing.security.auditLogPath": {
+          "type": "string",
+          "default": ".mcp-testing/audit.log",
+          "markdownDescription": "Path to audit log file."
+        },
+        "mcp-testing.security.allowedFrameworks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "jest",
+            "mocha",
+            "pytest",
+            "vitest",
+            "jasmine",
+            "ava"
+          ],
+          "markdownDescription": "Allowed test frameworks (security allowlist)."
+        },
+        "mcp-testing.security.maxCpuPercent": {
+          "type": "number",
+          "default": 80,
+          "minimum": 10,
+          "maximum": 100,
+          "markdownDescription": "Maximum CPU usage percentage for test processes.\n\n**Default:** 80%"
+        },
+        "mcp-testing.security.maxMemoryMB": {
+          "type": "number",
+          "default": 2048,
+          "minimum": 128,
+          "maximum": 16384,
+          "markdownDescription": "Maximum memory usage in MB for test processes.\n\n**Default:** 2048 MB"
+        },
+        "mcp-testing.security.blockShellCommands": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Block shell command execution in tests."
+        },
+        "mcp-testing.ui.showNotifications": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Show notifications for test results."
+        },
+        "mcp-testing.ui.notificationLevel": {
+          "type": "string",
+          "enum": [
+            "all",
+            "failures",
+            "none"
+          ],
+          "default": "failures",
+          "markdownDescription": "Which test results to show notifications for.\n\n**all**: All test runs\n\n**failures**: Only failures\n\n**none**: No notifications"
+        },
+        "mcp-testing.ui.autoRefreshInterval": {
+          "type": "number",
+          "default": 5000,
+          "minimum": 0,
+          "maximum": 60000,
+          "markdownDescription": "Auto-refresh interval for test views (milliseconds). Set to 0 to disable.\n\n**Default:** 5000 ms"
+        },
+        "mcp-testing.ui.showStatusBar": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Show test status in status bar."
+        },
+        "mcp-testing.ui.statusBarPosition": {
+          "type": "string",
+          "enum": [
+            "left",
+            "right"
+          ],
+          "default": "left",
+          "markdownDescription": "Status bar item position."
+        },
+        "mcp-testing.ui.showCodeLens": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Show CodeLens above test functions."
+        },
+        "mcp-testing.ui.codeLensPosition": {
+          "type": "string",
+          "enum": [
+            "above",
+            "inline"
+          ],
+          "default": "above",
+          "markdownDescription": "CodeLens position relative to test functions."
+        },
+        "mcp-testing.ui.showDiagnostics": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Show diagnostics for test failures and coverage gaps."
+        },
+        "mcp-testing.ui.diagnosticSeverity": {
+          "type": "object",
+          "properties": {
+            "testFailure": {
+              "type": "string",
+              "enum": [
+                "error",
+                "warning",
+                "information"
+              ],
+              "default": "error"
+            },
+            "coverageGap": {
+              "type": "string",
+              "enum": [
+                "error",
+                "warning",
+                "information"
+              ],
+              "default": "warning"
+            },
+            "flakyTest": {
+              "type": "string",
+              "enum": [
+                "error",
+                "warning",
+                "information"
+              ],
+              "default": "warning"
+            }
+          },
+          "default": {
+            "testFailure": "error",
+            "coverageGap": "warning",
+            "flakyTest": "warning"
+          },
+          "markdownDescription": "Diagnostic severity levels for different issue types."
+        },
+        "mcp-testing.ui.treeViewGrouping": {
+          "type": "string",
+          "enum": [
+            "file",
+            "suite",
+            "tag",
+            "status"
+          ],
+          "default": "file",
+          "markdownDescription": "Default grouping for test tree view."
+        },
+        "mcp-testing.ui.treeViewSorting": {
+          "type": "string",
+          "enum": [
+            "name",
+            "duration",
+            "status",
+            "recent"
+          ],
+          "default": "name",
+          "markdownDescription": "Default sorting for test tree view."
+        },
+        "mcp-testing.ui.webviewTheme": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "light",
+            "dark"
+          ],
+          "default": "auto",
+          "markdownDescription": "Theme for webview panels.\n\n**auto**: Match VS Code theme"
+        },
+        "mcp-testing.ui.showWelcomeMessage": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Show welcome message on first activation."
+        },
+        "mcp-testing.advanced.cacheEnabled": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Enable caching for test discovery and results."
+        },
+        "mcp-testing.advanced.cacheTTL": {
+          "type": "number",
+          "default": 300000,
+          "minimum": 0,
+          "maximum": 3600000,
+          "markdownDescription": "Cache time-to-live in milliseconds.\n\n**Default:** 300000 ms (5 minutes)"
+        },
+        "mcp-testing.advanced.enableExperimentalFeatures": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Enable experimental features (may be unstable)."
+        },
+        "mcp-testing.advanced.telemetryEnabled": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Enable anonymous usage telemetry."
+        },
+        "mcp-testing.advanced.debugMode": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Enable debug mode with verbose logging."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "node esbuild.js",
+    "compile:tests": "tsc --project tsconfig.test.json --skipLibCheck",
+    "watch": "node esbuild.js --watch",
+    "pretest": "npm run compile && npm run compile:tests",
+    "test": "node ./out/test/runTest.js",
+    "test:coverage": "c8 npm test",
+    "lint": "eslint src --ext ts",
+    "package": "vsce package --no-yarn --no-dependencies",
+    "publish": "vsce publish --no-yarn --no-dependencies"
+  },
+  "devDependencies": {
+    "@types/glob": "^8.1.0",
+    "@types/mocha": "^10.0.6",
+    "@types/node": "^20.x",
+    "@types/vscode": "^1.105.0",
+    "@vscode/test-electron": "^2.3.8",
+    "@vscode/vsce": "^3.7.1",
+    "c8": "^10.1.3",
+    "esbuild": "^0.27.1",
+    "fast-check": "^3.15.0",
+    "glob": "^10.3.10",
+    "mocha": "^10.2.0",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@ai-capabilities-suite/mcp-client-base": "^1.0.1",
+    "@ai-capabilities-suite/vscode-shared-status-bar": "^1.0.21",
+    "@modelcontextprotocol/sdk": "^1.23.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/digital-defiance/vscode-mcp-acs-testing.git"
+  },
+  "license": "MIT"
+}

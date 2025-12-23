@@ -1,0 +1,218 @@
+/**
+ * Property-based tests for CoverageDecorator
+ *
+ * Tests correctness properties 59-62 from the design document
+ */
+
+import * as assert from 'assert';
+import * as fc from 'fast-check';
+import * as vscode from 'vscode';
+import { CoverageReport } from '../mcpClient';
+
+/**
+ * File coverage information
+ */
+interface FileCoverage {
+  path: string;
+  metrics: {
+    lines: { total: number; covered: number; percentage: number };
+    branches: { total: number; covered: number; percentage: number };
+    functions: { total: number; covered: number; percentage: number };
+    statements: { total: number; covered: number; percentage: number };
+  };
+  lines: Record<number, LineCoverage>;
+  branches: BranchCoverage[];
+  functions: FunctionCoverage[];
+}
+
+/**
+ * Line coverage information
+ */
+interface LineCoverage {
+  line: number;
+  hits: number;
+  covered: boolean;
+}
+
+/**
+ * Branch coverage information
+ */
+interface BranchCoverage {
+  line: number;
+  branch: number;
+  taken: boolean;
+}
+
+/**
+ * Function coverage information
+ */
+interface FunctionCoverage {
+  name: string;
+  line: number;
+  hits: number;
+  covered: boolean;
+}
+
+/**
+ * Arbitrary for generating line coverage
+ * Ensures consistency: uncovered lines have 0 hits, covered lines have > 0 hits
+ */
+const lineCoverageArbitrary = fc
+  .tuple(fc.integer({ min: 1, max: 1000 }), fc.boolean())
+  .chain(([line, covered]) => {
+    return fc.record({
+      line: fc.constant(line),
+      hits: covered ? fc.integer({ min: 1, max: 100 }) : fc.constant(0),
+      covered: fc.constant(covered),
+    });
+  }) as fc.Arbitrary<LineCoverage>;
+
+/**
+ * Arbitrary for generating branch coverage
+ */
+const branchCoverageArbitrary = fc.record({
+  line: fc.integer({ min: 1, max: 1000 }),
+  branch: fc.integer({ min: 0, max: 10 }),
+  taken: fc.boolean(),
+}) as fc.Arbitrary<BranchCoverage>;
+
+/**
+ * Arbitrary for generating function coverage
+ * Ensures consistency: uncovered functions have 0 hits, covered functions have > 0 hits
+ */
+const functionCoverageArbitrary = fc
+  .tuple(
+    fc.string({ minLength: 1, maxLength: 50 }),
+    fc.integer({ min: 1, max: 1000 }),
+    fc.boolean()
+  )
+  .chain(([name, line, covered]) => {
+    return fc.record({
+      name: fc.constant(name),
+      line: fc.constant(line),
+      hits: covered ? fc.integer({ min: 1, max: 100 }) : fc.constant(0),
+      covered: fc.constant(covered),
+    });
+  }) as fc.Arbitrary<FunctionCoverage>;
+
+/**
+ * Arbitrary for generating file coverage
+ * Ensures metrics are consistent with line/function data
+ */
+const fileCoverageArbitrary = fc
+  .tuple(
+    fc.string({ minLength: 1, maxLength: 100 }).map((s) => `/src/${s}.ts`),
+    fc.array(lineCoverageArbitrary, { minLength: 1, maxLength: 50 }),
+    fc.array(branchCoverageArbitrary, { minLength: 0, maxLength: 20 }),
+    fc.array(functionCoverageArbitrary, { minLength: 1, maxLength: 10 })
+  )
+  .chain(([path, lines, branches, functions]) => {
+    // Calculate metrics from actual data
+    const linesMap: Record<number, LineCoverage> = {};
+    for (const line of lines) {
+      linesMap[line.line] = line;
+    }
+
+    const totalLines = lines.length;
+    const coveredLines = lines.filter((l) => l.covered).length;
+    const linePercentage = totalLines === 0 ? 0 : (coveredLines / totalLines) * 100;
+
+    const totalBranches = branches.length;
+    const coveredBranches = branches.filter((b) => b.taken).length;
+    const branchPercentage = totalBranches === 0 ? 100 : (coveredBranches / totalBranches) * 100;
+
+    const totalFunctions = functions.length;
+    const coveredFunctions = functions.filter((f) => f.covered).length;
+    const functionPercentage = totalFunctions === 0 ? 0 : (coveredFunctions / totalFunctions) * 100;
+
+    return fc.record({
+      path: fc.constant(path),
+      metrics: fc.constant({
+        lines: {
+          total: totalLines,
+          covered: coveredLines,
+          percentage: Math.fround(linePercentage),
+        },
+        branches: {
+          total: totalBranches,
+          covered: coveredBranches,
+          percentage: Math.fround(branchPercentage),
+        },
+        functions: {
+          total: totalFunctions,
+          covered: coveredFunctions,
+          percentage: Math.fround(functionPercentage),
+        },
+        statements: {
+          total: totalLines,
+          covered: coveredLines,
+          percentage: Math.fround(linePercentage),
+        },
+      }),
+      lines: fc.constant(linesMap),
+      branches: fc.constant(branches),
+      functions: fc.constant(functions),
+    });
+  }) as fc.Arbitrary<FileCoverage>;
+
+/**
+ * Arbitrary for generating coverage reports
+ * Ensures all percentages are valid (not NaN) and consistent
+ */
+const coverageReportArbitrary = fc.record({
+  overall: fc.record({
+    lines: fc
+      .tuple(fc.integer({ min: 1, max: 10000 }), fc.integer({ min: 0, max: 10000 }))
+      .chain(([total, covered]) => {
+        const actualCovered = Math.min(covered, total);
+        const percentage = Math.fround((actualCovered / total) * 100);
+        return fc.record({
+          total: fc.constant(total),
+          covered: fc.constant(actualCovered),
+          percentage: fc.constant(percentage),
+        });
+      }),
+    branches: fc
+      .tuple(fc.integer({ min: 0, max: 5000 }), fc.integer({ min: 0, max: 5000 }))
+      .chain(([total, covered]) => {
+        const actualCovered = Math.min(covered, total);
+        const percentage =
+          total === 0 ? Math.fround(100) : Math.fround((actualCovered / total) * 100);
+        return fc.record({
+          total: fc.constant(total),
+          covered: fc.constant(actualCovered),
+          percentage: fc.constant(percentage),
+        });
+      }),
+    functions: fc
+      .tuple(fc.integer({ min: 1, max: 2000 }), fc.integer({ min: 0, max: 2000 }))
+      .chain(([total, covered]) => {
+        const actualCovered = Math.min(covered, total);
+        const percentage = Math.fround((actualCovered / total) * 100);
+        return fc.record({
+          total: fc.constant(total),
+          covered: fc.constant(actualCovered),
+          percentage: fc.constant(percentage),
+        });
+      }),
+    statements: fc
+      .tuple(fc.integer({ min: 1, max: 10000 }), fc.integer({ min: 0, max: 10000 }))
+      .chain(([total, covered]) => {
+        const actualCovered = Math.min(covered, total);
+        const percentage = Math.fround((actualCovered / total) * 100);
+        return fc.record({
+          total: fc.constant(total),
+          covered: fc.constant(actualCovered),
+          percentage: fc.constant(percentage),
+        });
+      }),
+  }),
+  files: fc.array(fileCoverageArbitrary, { minLength: 1, maxLength: 10 }).map((files) => {
+    const filesMap: Record<string, FileCoverage> = {};
+    for (const file of files) {
+      filesMap[file.path] = file;
+    }
+    return filesMap;
+  }),
+  timestamp: fc.date().map((d) => d.toISOString()),
+}) as fc.Arbitrary<CoverageReport>;
