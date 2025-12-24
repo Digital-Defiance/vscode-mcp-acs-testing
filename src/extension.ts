@@ -98,24 +98,44 @@ export async function activate(context: vscode.ExtensionContext) {
  * This allows us to capture test results from ANY test runner
  */
 function setupTestEventListeners(context: vscode.ExtensionContext) {
-  // Listen to test result changes
-  context.subscriptions.push(
-    vscode.test.onDidChangeTestResults((event) => {
-      outputChannel.info(`Test results changed: ${event.results.length} results`);
+  // Check if outputChannel is initialized
+  if (!outputChannel) {
+    console.warn('[MCP ACS Testing] outputChannel not initialized, skipping test event listeners');
+    return;
+  }
 
-      // Update our test history
-      for (const result of event.results) {
-        const testRun = result;
-        outputChannel.info(`Test run completed: ${testRun.results.length} tests`);
+  // Check if VS Code Testing API is available (requires VS Code 1.59.0+)
+  if (!vscode.test || !vscode.test.onDidChangeTestResults) {
+    outputChannel.warn('VS Code Testing API not available, skipping test event listeners');
+    return;
+  }
 
-        // TODO: Store results in test history
-        // TODO: Update coverage data
-        // TODO: Detect flaky tests
-      }
-    })
-  );
+  try {
+    // Listen to test result changes
+    context.subscriptions.push(
+      vscode.test.onDidChangeTestResults((event) => {
+        outputChannel.info(`Test results changed: ${event.results.length} results`);
 
-  outputChannel.info('✓ VS Code test event listeners registered');
+        // Update our test history
+        for (const result of event.results) {
+          const testRun = result;
+          outputChannel.info(`Test run completed: ${testRun.results.length} tests`);
+
+          // TODO: Store results in test history
+          // TODO: Update coverage data
+          // TODO: Detect flaky tests
+        }
+      })
+    );
+
+    outputChannel.info('✓ VS Code test event listeners registered');
+  } catch (error) {
+    outputChannel.error(
+      `Failed to setup test event listeners: ${
+        error instanceof Error ? error.message : String(error)
+      }`
+    );
+  }
 }
 
 async function activateInternal(context: vscode.ExtensionContext) {

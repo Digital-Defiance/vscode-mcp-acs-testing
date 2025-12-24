@@ -2,7 +2,7 @@
   "name": "mcp-acs-testing",
   "displayName": "MCP ACS Testing Manager",
   "description": "AI-powered testing insights and analysis. Discover tests, generate test cases, analyze coverage gaps, detect flaky tests, and get intelligent testing suggestions. Works with any test framework via VS Code's Testing API.",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "packageManager": "yarn@4.12.0",
   "publisher": "DigitalDefiance",
   "icon": "images/icon.png",
