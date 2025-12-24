@@ -143,7 +143,6 @@ async function activateInternal(context: vscode.ExtensionContext) {
     log: true,
   });
   outputChannel.appendLine('MCP ACS Testing Manager extension activating...');
-  outputChannel.appendLine('🔥 CODE VERSION: 2025-12-23T14:55 - FOUND TEST MODE BUG 🔥');
 
   // Initialize Settings Manager
   settingsManager = SettingsManager.getInstance(outputChannel);
