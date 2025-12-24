@@ -204,8 +204,22 @@ export class MCPTestingClient extends BaseMCPClient {
   /**
    * Run tests
    */
-  async runTests(options: TestRunOptions): Promise<TestResult[]> {
-    const result = (await this.callTool('test_run', options)) as {
+  async runTests(options: TestRunOptions): Promise<any> {
+    // Add framework if not provided
+    const framework = options.framework || this.detectFramework();
+    const projectPath = this.getWorkspaceRoot();
+
+    const runOptions = {
+      ...options,
+      framework,
+      projectPath,
+    };
+
+    this.outputChannel.info(
+      `Running tests with framework: ${framework}, projectPath: ${projectPath}`
+    );
+
+    const result = (await this.callTool('test_run', runOptions)) as {
       content: Array<{ type: string; text: string }>;
     };
 
@@ -215,19 +229,29 @@ export class MCPTestingClient extends BaseMCPClient {
       throw new Error('No text content in response');
     }
 
-    const data = JSON.parse(textContent.text);
-    const tests = data.tests || [];
+    const response = JSON.parse(textContent.text);
+    this.outputChannel.info(`Test run response status: ${response.status}`);
 
-    // Emit events for each test
-    for (const test of tests) {
-      if (test.status === 'running') {
-        this._onTestStarted.fire(test);
-      } else {
-        this._onTestCompleted.fire(test);
+    // Handle the response format from the MCP server
+    if (response.status === 'success' && response.data) {
+      const tests = response.data.results || [];
+
+      // Emit events for each test
+      for (const test of tests) {
+        if (test.status === 'running') {
+          this._onTestStarted.fire(test);
+        } else {
+          this._onTestCompleted.fire(test);
+        }
       }
+
+      return response;
+    } else if (response.status === 'error') {
+      this.outputChannel.error(`Test run error: ${response.error?.message || 'Unknown error'}`);
+      return response;
     }
 
-    return tests;
+    return response;
   }
 
   /**
@@ -260,23 +284,17 @@ export class MCPTestingClient extends BaseMCPClient {
       throw new Error('No text content in response');
     }
 
-    this.outputChannel.info(`Raw response from test_list: ${textContent.text.substring(0, 500)}`);
-
     const response = JSON.parse(textContent.text);
 
     // Handle both response formats
     if (response.status === 'success' && response.data) {
-      this.outputChannel.info(
-        `Found ${response.data.tests?.length || 0} tests in response.data.tests`
-      );
+      this.outputChannel.info(`Found ${response.data.tests?.length || 0} tests`);
       return response.data.tests || [];
     } else if (response.tests) {
-      this.outputChannel.info(`Found ${response.tests.length} tests in response.tests`);
+      this.outputChannel.info(`Found ${response.tests.length} tests`);
       return response.tests;
     } else {
-      this.outputChannel.warn(
-        `Unexpected response format: ${JSON.stringify(response).substring(0, 200)}`
-      );
+      this.outputChannel.warn(`Unexpected response format from test_list`);
       return [];
     }
   }
