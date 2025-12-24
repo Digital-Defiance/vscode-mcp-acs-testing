@@ -240,8 +240,18 @@ export class MCPTestingClient extends BaseMCPClient {
   /**
    * List all tests
    */
-  async listTests(): Promise<TestResult[]> {
-    const result = (await this.callTool('test_list', {})) as {
+  async listTests(framework?: string): Promise<TestResult[]> {
+    // Get framework from parameter or try to detect it
+    const testFramework = framework || this.detectFramework();
+
+    this.outputChannel.info(
+      `Calling test_list with framework: ${testFramework}, projectPath: ${this.getWorkspaceRoot()}`
+    );
+
+    const result = (await this.callTool('test_list', {
+      framework: testFramework,
+      projectPath: this.getWorkspaceRoot(),
+    })) as {
       content: Array<{ type: string; text: string }>;
     };
 
@@ -250,8 +260,98 @@ export class MCPTestingClient extends BaseMCPClient {
       throw new Error('No text content in response');
     }
 
-    const data = JSON.parse(textContent.text);
-    return data.tests || [];
+    this.outputChannel.info(`Raw response from test_list: ${textContent.text.substring(0, 500)}`);
+
+    const response = JSON.parse(textContent.text);
+
+    // Handle both response formats
+    if (response.status === 'success' && response.data) {
+      this.outputChannel.info(
+        `Found ${response.data.tests?.length || 0} tests in response.data.tests`
+      );
+      return response.data.tests || [];
+    } else if (response.tests) {
+      this.outputChannel.info(`Found ${response.tests.length} tests in response.tests`);
+      return response.tests;
+    } else {
+      this.outputChannel.warn(
+        `Unexpected response format: ${JSON.stringify(response).substring(0, 200)}`
+      );
+      return [];
+    }
+  }
+
+  /**
+   * Detect test framework from workspace
+   */
+  private detectFramework(): string {
+    const workspaceRoot = this.getWorkspaceRoot();
+    if (!workspaceRoot) {
+      return 'jest'; // Default fallback
+    }
+
+    const fs = require('fs');
+    const path = require('path');
+
+    // Check for framework-specific config files
+    const frameworkIndicators = [
+      { file: 'jest.config.js', framework: 'jest' },
+      { file: 'jest.config.ts', framework: 'jest' },
+      { file: 'jest.config.json', framework: 'jest' },
+      { file: 'vitest.config.js', framework: 'vitest' },
+      { file: 'vitest.config.ts', framework: 'vitest' },
+      { file: '.mocharc.json', framework: 'mocha' },
+      { file: '.mocharc.js', framework: 'mocha' },
+      { file: 'pytest.ini', framework: 'pytest' },
+      { file: 'setup.cfg', framework: 'pytest' },
+    ];
+
+    for (const { file, framework } of frameworkIndicators) {
+      if (fs.existsSync(path.join(workspaceRoot, file))) {
+        this.outputChannel.info(`Detected test framework: ${framework} (found ${file})`);
+        return framework;
+      }
+    }
+
+    // Check package.json for test script or dependencies
+    const packageJsonPath = path.join(workspaceRoot, 'package.json');
+    if (fs.existsSync(packageJsonPath)) {
+      try {
+        const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+        const deps = {
+          ...packageJson.dependencies,
+          ...packageJson.devDependencies,
+        };
+
+        if (deps.vitest) {
+          this.outputChannel.info('Detected test framework: vitest (from package.json)');
+          return 'vitest';
+        }
+        if (deps.jest || deps['@jest/core']) {
+          this.outputChannel.info('Detected test framework: jest (from package.json)');
+          return 'jest';
+        }
+        if (deps.mocha) {
+          this.outputChannel.info('Detected test framework: mocha (from package.json)');
+          return 'mocha';
+        }
+      } catch (error) {
+        this.outputChannel.warn(`Failed to parse package.json: ${error}`);
+      }
+    }
+
+    this.outputChannel.info('No test framework detected, using default: jest');
+    return 'jest';
+  }
+
+  /**
+   * Get workspace root path
+   */
+  private getWorkspaceRoot(): string | undefined {
+    const workspaceFolders = require('vscode').workspace.workspaceFolders;
+    return workspaceFolders && workspaceFolders.length > 0
+      ? workspaceFolders[0].uri.fsPath
+      : undefined;
   }
 
   /**

@@ -1,1 +1,11 @@
-{}
+{
+  "name": "mcp-testing-test-workspace",
+  "version": "1.0.0",
+  "description": "Test workspace for MCP ACS Testing Manager",
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^29.0.0"
+  }
+}

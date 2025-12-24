@@ -7,6 +7,7 @@
 import * as vscode from 'vscode';
 import { MCPTestingClient } from './mcpClient';
 import { TestExplorerProvider } from './testExplorerProvider';
+import { TestTreeProvider } from './testTreeProvider';
 import { TestHistoryTreeProvider } from './testHistoryTreeProvider';
 import { CoverageTreeProvider } from './coverageTreeProvider';
 import { FlakyTestsTreeProvider } from './flakyTestsTreeProvider';
@@ -39,6 +40,7 @@ let mcpClient: MCPTestingClient | undefined;
 let statusBarManager: StatusBarManager | undefined;
 let notificationManager: NotificationManager | undefined;
 let testExplorer: TestExplorerProvider | undefined;
+let testTreeProvider: TestTreeProvider | undefined;
 let testHistoryProvider: TestHistoryTreeProvider | undefined;
 let coverageProvider: CoverageTreeProvider | undefined;
 let flakyTestsProvider: FlakyTestsTreeProvider | undefined;
@@ -181,9 +183,40 @@ function registerAllCommands(context: vscode.ExtensionContext) {
   console.log('[MCP ACS Testing] Registering mcp-testing.runTests');
   context.subscriptions.push(
     vscode.commands.registerCommand('mcp-testing.runTests', async () => {
-      vscode.window.showInformationMessage(
-        'Run tests - Use Copilot with @testing for AI-assisted testing'
-      );
+      if (!mcpClient) {
+        vscode.window.showWarningMessage('MCP Testing client not initialized');
+        return;
+      }
+
+      try {
+        vscode.window.showInformationMessage('Running all tests...');
+        const result = await mcpClient.runTests({});
+
+        if (result.status === 'success') {
+          const summary = result.summary;
+          const message = `Tests completed: ${summary.passed} passed, ${summary.failed} failed, ${summary.skipped} skipped`;
+
+          if (summary.failed > 0) {
+            vscode.window.showErrorMessage(message);
+          } else {
+            vscode.window.showInformationMessage(message);
+          }
+
+          // Refresh test views
+          if (testTreeProvider) {
+            await testTreeProvider.refresh();
+          }
+          if (testExplorer) {
+            await testExplorer.refreshTests();
+          }
+        } else {
+          vscode.window.showErrorMessage(`Test run failed: ${result.error || 'Unknown error'}`);
+        }
+      } catch (error) {
+        vscode.window.showErrorMessage(
+          `Failed to run tests: ${error instanceof Error ? error.message : String(error)}`
+        );
+      }
     })
   );
 
@@ -532,10 +565,11 @@ function registerAllCommands(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand('mcp-testing.refreshTests', async () => {
       if (testExplorer) {
         await testExplorer.refreshTests();
-        vscode.window.showInformationMessage('Tests refreshed');
-      } else {
-        vscode.window.showInformationMessage('Test Explorer not initialized');
       }
+      if (testTreeProvider) {
+        await testTreeProvider.refresh();
+      }
+      vscode.window.showInformationMessage('Tests refreshed');
     })
   );
 
@@ -1063,6 +1097,24 @@ async function initializeComponents(context: vscode.ExtensionContext) {
         );
       }
 
+      // Initialize Test Tree Provider (for custom tree view)
+      try {
+        testTreeProvider = new TestTreeProvider(mcpClient, outputChannel);
+        const testTreeView = vscode.window.createTreeView('mcp-testing-tests', {
+          treeDataProvider: testTreeProvider,
+          showCollapseAll: true,
+        });
+        context.subscriptions.push(testTreeView);
+        context.subscriptions.push(testTreeProvider);
+        outputChannel.appendLine('✓ Test Tree provider initialized');
+      } catch (error) {
+        outputChannel.error(
+          `✗ Failed to initialize Test Tree provider: ${
+            error instanceof Error ? error.message : String(error)
+          }`
+        );
+      }
+
       // Initialize Test History Tree Provider
       try {
         testHistoryProvider = new TestHistoryTreeProvider(mcpClient, outputChannel);
@@ -1398,6 +1450,9 @@ export function deactivate() {
   }
   if (testHistoryProvider) {
     testHistoryProvider.dispose();
+  }
+  if (testTreeProvider) {
+    testTreeProvider.dispose();
   }
   if (testExplorer) {
     testExplorer.dispose();
