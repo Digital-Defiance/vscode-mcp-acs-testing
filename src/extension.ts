@@ -1050,6 +1050,7 @@ async function initializeComponents(context: vscode.ExtensionContext) {
       outputChannel.appendLine('✓ Notification Manager initialized');
 
       // Initialize Test Explorer
+      // Initialize Test Explorer (uses VS Code's native TestController API)
       try {
         testExplorer = new TestExplorerProvider(mcpClient, outputChannel);
         context.subscriptions.push(testExplorer);

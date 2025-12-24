@@ -2,7 +2,7 @@
   "name": "mcp-acs-testing",
   "displayName": "MCP ACS Testing Manager",
   "description": "Comprehensive testing capabilities for AI agents with MCP integration. Run tests, analyze coverage, generate tests, debug failures, and manage the complete testing lifecycle. Part of the Digital Defiance AI Capabilities Suite.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "packageManager": "yarn@4.12.0",
   "publisher": "DigitalDefiance",
   "icon": "images/icon.png",
@@ -381,12 +381,6 @@
     "views": {
       "mcp-testing-explorer": [
         {
-          "id": "mcp-testing-tests",
-          "name": "Tests",
-          "icon": "$(beaker)",
-          "contextualTitle": "MCP Tests"
-        },
-        {
           "id": "mcp-testing-coverage",
           "name": "Coverage",
           "icon": "$(graph)",
@@ -466,16 +460,6 @@
     ],
     "menus": {
       "view/title": [
-        {
-          "command": "mcp-testing.refreshTests",
-          "when": "view == mcp-testing-tests",
-          "group": "navigation"
-        },
-        {
-          "command": "mcp-testing.runTests",
-          "when": "view == mcp-testing-tests",
-          "group": "navigation"
-        },
         {
           "command": "mcp-testing.clearHistory",
           "when": "view == mcp-testing-history",
