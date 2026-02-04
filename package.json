@@ -1518,7 +1518,7 @@
   "dependencies": {
     "@ai-capabilities-suite/mcp-client-base": "^1.0.2",
     "@ai-capabilities-suite/vscode-shared-status-bar": "^1.0.21",
-    "@modelcontextprotocol/sdk": "^1.23.0"
+    "@modelcontextprotocol/sdk": "^1.26.0"
   },
   "repository": {
     "type": "git",
