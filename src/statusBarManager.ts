@@ -131,7 +131,11 @@ export class StatusBarManager implements vscode.Disposable {
       };
 
       this.outputChannel.info('Calling registerExtension with id: mcp-acs-testing');
-      await registerExtension('mcp-acs-testing', metadata);
+      const regPromise = registerExtension('mcp-acs-testing', metadata);
+      Promise.race([
+        regPromise,
+        new Promise((_, reject) => setTimeout(() => reject(new Error('ACS registration timeout')), 5000)),
+      ]).catch((err) => console.error('[Testing] ACS registration:', err.message));
       this.isRegistered = true;
       this.outputChannel.info('✓ Successfully registered with shared ACS status bar');
     } catch (error) {
