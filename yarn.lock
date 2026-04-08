@@ -14,12 +14,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ai-capabilities-suite/vscode-shared-status-bar@npm:^1.0.22":
-  version: 1.0.22
-  resolution: "@ai-capabilities-suite/vscode-shared-status-bar@npm:1.0.22"
+"@ai-capabilities-suite/vscode-shared-status-bar@npm:^1.0.24":
+  version: 1.0.24
+  resolution: "@ai-capabilities-suite/vscode-shared-status-bar@npm:1.0.24"
   peerDependencies:
     vscode: ^1.80.0
-  checksum: 10c0/e864f03abac26e1ce34bda02ec946e888d72b13d6b01e26938e2a3e68a10986cc7842726acd909e0a88a2b09805381debae75c8900ab35c4a838edff94d0246f
+  checksum: 10c0/92126acf22a70e00a76ae29764177f3be02eda1ebe4e82fb73600be3385ec2449d0ba9da90e27183a928d4175f1598e74868bef117d869cfd0ae98e48d225326
   languageName: node
   linkType: hard
 
@@ -3150,7 +3150,7 @@ __metadata:
   resolution: "mcp-acs-testing@workspace:."
   dependencies:
     "@ai-capabilities-suite/mcp-client-base": "npm:^1.0.2"
-    "@ai-capabilities-suite/vscode-shared-status-bar": "npm:^1.0.22"
+    "@ai-capabilities-suite/vscode-shared-status-bar": "npm:^1.0.24"
     "@modelcontextprotocol/sdk": "npm:^1.23.0"
     "@types/glob": "npm:^8.1.0"
     "@types/mocha": "npm:^10.0.6"
